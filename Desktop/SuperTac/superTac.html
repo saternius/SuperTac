@@ -1,0 +1,97 @@
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <meta charset="ISO-8859-1">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <script src="build/react.js"></script>
+    <script src="build/react-dom.js"></script>
+    <script src="build/browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Patrick+Hand+SC" rel="stylesheet">
+
+  </head>
+  <body>
+    <div class='title'>
+      Super Tac
+    </div>
+    <div id="example" class='board'>
+    </div>
+  </body>
+
+  <script src="js/GameModel.js"></script>
+  <script type="text/babel">
+
+      class Grid extends React.Component{
+        constructor(props){
+          super(props);
+          var pos = props.pos;
+          this.xPos = 2+(pos%9)*66+"px";
+          this.yPos = 2+(Math.floor(pos/9))*66+"px";
+          this.borderTop = "none";
+          this.borderLeft = "none";
+          this.borderRight = "none";
+          this.borderBottom = "none";
+          if(pos%3==0){
+            this.borderLeft = "solid";
+          }
+          if(pos%9==8){
+            this.borderRight = "solid";
+          }
+          if(pos>71){
+            this.borderBottom = "solid";
+          }
+          if((pos%27)<9){
+            this.borderTop = "solid";
+          }
+      }
+
+        render(){
+          var pos = this.props.pos;
+          var icon = this.props.icon;
+          var backgroundColor = (icon==="none")?((!this.props.legal)?((pos%2)?"white":"#f2f2f2"):((pos%2)?"rgb(177, 251, 169)":"rgb(157, 228, 150)")):((icon==="x")?"rgb(243, 125, 125)":"#6f83f3");
+          var choice = "";
+          var onclick = (this.props.legal)?this.props.onclick:(()=>{});
+          var cursor = (this.props.legal)?"pointer":"default";
+          if(icon !== "none"){
+              choice = (<div className='icon'>{icon}</div>);
+          }
+
+          return(<div onClick={onclick} style={{cursor:cursor,backgroundColor:backgroundColor,top:this.yPos,left:this.xPos,borderLeft:this.borderLeft,borderRight:this.borderRight,borderTop:this.borderTop,borderBottom:this.borderBottom}} className='grid' >{choice}</div>);
+        }
+      }
+
+      class Board extends React.Component {
+        constructor(props){
+          super(props);
+          this.state = {
+            model: new GameModel()
+          }
+        }
+
+        render() {
+          var model = this.state.model;
+          var i = -1;
+          var comps = model.grid.map((sq)=>{
+            i++;
+            var n = "block_"+i;
+            var leg = model.legals.indexOf(i)>-1;
+            return <Grid id={n} key={n} pos={i} icon={sq.icon} legal={leg} onclick={
+              ((i)=>{
+                    return ()=>{model.gotClicked(i, this)}
+                  })(i)
+            }/>;
+          });
+
+          return (
+              <div>{comps}</div>
+          );
+        }
+      }
+
+
+
+
+      ReactDOM.render(
+        <Board/>,
+        document.getElementById('example')
+      );
+  </script>
+</html>

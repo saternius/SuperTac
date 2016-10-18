@@ -1,0 +1,40 @@
+body{
+  background-color:#d5e9f9;
+}
+
+.title{
+  font-size: 3rem;
+  text-align: center;
+}
+
+.board{
+  background-color: #bfbfbf;
+  width: 600px;
+  height: 600px;
+  margin-left: 5%;
+  margin-top: 5%;
+  position: relative;
+  left:calc(50% - 350px);
+}
+
+
+.grid{
+  background-color: white;
+  position: absolute;
+  width:66px;
+  height:66px;
+  border: solid;
+  border-width: 1px;
+  border-color: #c3c3c3;
+  position: absolute;
+  cursor:pointer;
+  text-align: center;
+}
+
+.icon{
+  position: absolute;
+  top: calc(15% - 10px);
+  left: calc(50% - 10px);
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 2.5rem;
+}
