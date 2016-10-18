@@ -97,16 +97,17 @@
 
       class Cover extends React.Component{
           render(){
+
             var winner = "";
             var bgColor = "transparent";
             if(this.props.winner !=="none"){
               winner = this.props.winner;
-              var xWon = this.winner === "x";
+              var xWon = winner === "x";
               bgColor = (xWon)?"rgba(207, 50, 50, 0.9)":"rgba(50, 85, 207, 0.9)";
             }
 
             return (
-              <div className="cover-square" style={{backgroundColor:bgColor}}>
+              <div className="cover-square" style={{backgroundColor:bgColor, left:this.props.x, top:this.props.y}}>
                 <div className='cover-text'>
                   {winner}
                 </div>
@@ -130,15 +131,15 @@
 
           return(
             <div className='cover-up'>
-              <Cover winner={tlStatus}/>
-              <Cover winner={tcStatus}/>
-              <Cover winner={trStatus}/>
-              <Cover winner={clStatus}/>
-              <Cover winner={cStatus}/>
-              <Cover winner={crStatus}/>
-              <Cover winner={blStatus}/>
-              <Cover winner={bcStatus}/>
-              <Cover winner={brStatus}/>
+              <Cover winner={tlStatus} x={0} y={0}/>
+              <Cover winner={tcStatus} x={200} y={0}/>
+              <Cover winner={trStatus} x={400} y={0}/>
+              <Cover winner={clStatus} x={0} y={200}/>
+              <Cover winner={cStatus} x={200} y={200}/>
+              <Cover winner={crStatus} x={400} y={200}/>
+              <Cover winner={blStatus} x={0} y={400}/>
+              <Cover winner={bcStatus} x={200} y={400}/>
+              <Cover winner={brStatus} x={400} y={400}/>
             </div>
           );
         }

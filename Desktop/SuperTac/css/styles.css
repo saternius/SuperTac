@@ -70,7 +70,7 @@ body{
   height: 33.33%;
   display: inline-block;
   pointer-events: none;
-
+  position:absolute;
 }
 
 .cover-text{

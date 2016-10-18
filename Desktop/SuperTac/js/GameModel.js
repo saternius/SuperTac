@@ -40,9 +40,9 @@ class SubBoard{
   }
 
   addGrid(spot,icon){
-    this.subGrid[spot].icon = icon;
+
     var rank = this.getRank(spot,icon);
-    console.log(icon+"("+this.pos+"): "+rank);
+    //console.log(icon+"("+this.pos+"): "+rank);
     if(rank>this.bestRank){
       this.bestRank = rank;
       this.winning = icon;
@@ -147,6 +147,8 @@ class GameModel{
     gotClicked(id, board){
       var grid = this.grid[id];
       var lastPointer = this.lastPointer===undefined?SubBoard.getSubBoard(id):this.lastPointer;
+      grid.icon = this.turn;
+      //this.subGrid[spot].icon = icon;
       this.subBoards[lastPointer].addGrid(grid.pointer,this.turn);
       this.turn = (this.turn === "x")?"o":"x";
       this.legals = this.getLegals(grid.pointer);
@@ -156,8 +158,8 @@ class GameModel{
 
     getLegals(pointer){
       var legals = [];
-      var cands = GameModel.getSubBoardCords(pointer);
-      for(var i=0; i<9;i++){
+      var cands = this.getSubsWithWins(pointer);
+      for(var i=0; i<cands.length;i++){
         if(this.grid[cands[i]].icon === "none"){
           legals.push(cands[i]);
         }
@@ -165,6 +167,30 @@ class GameModel{
       this.lastPointer = pointer;
       return legals;
     }
+
+   getSubsWithWins(pointer){
+    //  if(this.lastPointer === undefined){
+    //    return GameModel.getSubBoardCords(pointer);;
+    //  }
+
+     console.log(pointer+","+this.lastPointer);
+     if(this.subBoards[pointer].winner!=="none"){
+        var full = Array.from(Array(81).keys());
+        for(var key in this.subBoards){
+          if(this.subBoards[key].winner !== "none"){
+            var toRemove = GameModel.getSubBoardCords(key);
+            console.log(toRemove);
+            for(var i=0; i<toRemove.length;i++){
+              var index = full.indexOf(toRemove[i]);
+              console.log(index);
+              full.splice(index,1);
+            }
+          }
+        }
+        return full;
+      }
+      return GameModel.getSubBoardCords(pointer);
+   }
 
     static getSubBoardCords(pointer){
       switch(pointer){
