@@ -53,8 +53,94 @@
           if(icon !== "none"){
               choice = (<div className='icon'>{icon}</div>);
           }
-
           return(<div onClick={onclick} style={{cursor:cursor,backgroundColor:backgroundColor,top:this.yPos,left:this.xPos,borderLeft:this.borderLeft,borderRight:this.borderRight,borderTop:this.borderTop,borderBottom:this.borderBottom}} className='grid' >{choice}</div>);
+        }
+      }
+
+
+      class BoardStatus extends React.Component{
+        constructor(props){
+          super(props);
+        }
+
+        render(){
+          var model = this.props.model;
+          var tlStatus = model.subBoards["topLeft"].winning;
+          var tcStatus = model.subBoards["topCenter"].winning;
+          var trStatus = model.subBoards["topRight"].winning;
+          var clStatus = model.subBoards["centerLeft"].winning;
+          var cStatus = model.subBoards["center"].winning;
+          var crStatus = model.subBoards["centerRight"].winning;
+          var blStatus = model.subBoards["bottomLeft"].winning;
+          var bcStatus = model.subBoards["bottomCenter"].winning;
+          var brStatus = model.subBoards["bottomRight"].winning;
+          return(
+            <div className='board-status'>
+              <div>Winning Status</div>
+              <br/>
+              <div className='status-text'>Top Left: {tlStatus}</div>
+              <div className='status-text'>Top Center: {tcStatus}</div>
+              <div className='status-text'>Top Right: {trStatus}</div>
+              <br/>
+              <div className='status-text'>Center Left: {clStatus}</div>
+              <div className='status-text'>Center: {cStatus}</div>
+              <div className='status-text'>Center Right: {crStatus}</div>
+              <br/>
+              <div className='status-text'>Bottom Left: {blStatus}</div>
+              <div className='status-text'>Bottom Center: {bcStatus}</div>
+              <div className='status-text'>Bottom Right: {brStatus}</div>
+            </div>
+          );
+        }
+      }
+
+
+      class Cover extends React.Component{
+          render(){
+            var winner = "";
+            var bgColor = "transparent";
+            if(this.props.winner !=="none"){
+              winner = this.props.winner;
+              var xWon = this.winner === "x";
+              bgColor = (xWon)?"rgba(207, 50, 50, 0.9)":"rgba(50, 85, 207, 0.9)";
+            }
+
+            return (
+              <div className="cover-square" style={{backgroundColor:bgColor}}>
+                <div className='cover-text'>
+                  {winner}
+                </div>
+              </div>
+            );
+          }
+      }
+
+      class WinCover extends React.Component{
+        render(){
+          var model = this.props.model;
+          var tlStatus = model.subBoards["topLeft"].winner;
+          var tcStatus = model.subBoards["topCenter"].winner;
+          var trStatus = model.subBoards["topRight"].winner;
+          var clStatus = model.subBoards["centerLeft"].winner;
+          var cStatus = model.subBoards["center"].winner;
+          var crStatus = model.subBoards["centerRight"].winner;
+          var blStatus = model.subBoards["bottomLeft"].winner;
+          var bcStatus = model.subBoards["bottomCenter"].winner;
+          var brStatus = model.subBoards["bottomRight"].winner;
+
+          return(
+            <div className='cover-up'>
+              <Cover winner={tlStatus}/>
+              <Cover winner={tcStatus}/>
+              <Cover winner={trStatus}/>
+              <Cover winner={clStatus}/>
+              <Cover winner={cStatus}/>
+              <Cover winner={crStatus}/>
+              <Cover winner={blStatus}/>
+              <Cover winner={bcStatus}/>
+              <Cover winner={brStatus}/>
+            </div>
+          );
         }
       }
 
@@ -81,13 +167,14 @@
           });
 
           return (
+            <div>
               <div>{comps}</div>
+              <BoardStatus model={model}/>
+              <WinCover model={model}/>
+            </div>
           );
         }
       }
-
-
-
 
       ReactDOM.render(
         <Board/>,

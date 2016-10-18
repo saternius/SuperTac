@@ -36,39 +36,40 @@ class SubBoard{
     this.bestRank = 0;
     var squares = GameModel.getSubBoardCords(pos);
     this.subGrid = {topLeft:grid[squares[0]],topCenter:grid[squares[1]],topRight:grid[squares[2]],centerLeft:grid[squares[3]],center:grid[squares[4]],centerRight:grid[squares[5]],bottomLeft:grid[squares[6]],bottomCenter:grid[squares[7]],bottomRight:grid[squares[8]]};
+    this.pos = pos;
   }
 
   addGrid(spot,icon){
     this.subGrid[spot].icon = icon;
     var rank = this.getRank(spot,icon);
+    console.log(icon+"("+this.pos+"): "+rank);
     if(rank>this.bestRank){
       this.bestRank = rank;
       this.winning = icon;
       if(rank == 3){
-        winner = icon;
+        this.winner = icon;
       }
-    }else if(rank == this.bestRank){
+    }else if(rank == this.bestRank && this.winning!==icon){
       this.winning = "none";
     }
   }
 
-  exists(spot,icon){
+  exists(icon,spot){
     return this.subGrid[spot].icon === icon;
   }
 
-  addRank(params){
-    var exists = this.exists;
+  addRank(icon,params){
     var goodness = new Set();
     for(var i=0; i<params.length;i++){
       var param = params[i];
-      goodness.add(params[0]);
-      goodness.add(params[1]);
-      if(exists(param[0]) && exists(param[1])){
+      goodness.add(param[0]);
+      goodness.add(param[1]);
+      if(this.exists(icon,param[0]) && this.exists(icon,param[1])){
         return 3;
       }
     }
-    for (let item of mySet){
-      if(exists(item)){
+    for (let item of goodness){
+      if(this.exists(icon,item)){
         return 2;
       }
     }
@@ -77,26 +78,25 @@ class SubBoard{
 
   getRank(spot,icon){
     var exists = this.exists;
-    console.log(spot);
     var rank = 1;
     if(spot === "topLeft"){
-      rank = this.addRank(["topCenter","topRight"],["center","bottomRight"],["centerLeft","bottomLeft"]);
+      rank = this.addRank(icon,[["topCenter","topRight"],["center","bottomRight"],["centerLeft","bottomLeft"]]);
     }else if(spot === "topCenter"){
-      rank = this.addRank(["topLeft","topRight"],["center","bottomCenter"]);
+      rank = this.addRank(icon,[["topLeft","topRight"],["center","bottomCenter"]]);
     }else if(spot === "topRight"){
-      rank = this.addRank(["topLeft","topCenter"],["centerRight","bottomRight"],["center","bottomRight"]);
+      rank = this.addRank(icon,[["topLeft","topCenter"],["centerRight","bottomRight"],["center","bottomRight"]]);
     }else if(spot === "centerLeft"){
-      rank = this.addRank(["topLeft","bottomLeft"],["center","centerRight"]);
+      rank = this.addRank(icon,[["topLeft","bottomLeft"],["center","centerRight"]]);
     }else if(spot === "center"){
-      rank = this.addRank(["centerLeft","centerRight"],["topCenter","bottomCenter"],["topLeft","bottomRight"],["topRight","bottomLeft"]);
+      rank = this.addRank(icon,[["centerLeft","centerRight"],["topCenter","bottomCenter"],["topLeft","bottomRight"],["topRight","bottomLeft"]]);
     }else if(spot === "centerRight"){
-      rank = this.addRank(["topRight","bottomRight"],["center","centerLeft"]);
+      rank = this.addRank(icon,[["topRight","bottomRight"],["center","centerLeft"]]);
     }else if(spot === "bottomLeft"){
-      rank = this.addRank(["centerLeft","topLeft"],["bottomCenter","bottomRight"],["center","topRight"]);
+      rank = this.addRank(icon,[["centerLeft","topLeft"],["bottomCenter","bottomRight"],["center","topRight"]]);
     }else if(spot === "bottomCenter"){
-      rank = this.addRank(["center","topCenter"],["bottomLeft","bottomRight"]);
+      rank = this.addRank(icon,[["center","topCenter"],["bottomLeft","bottomRight"]]);
     }else if(spot === "bottomRight"){
-      rank = this.addRank(["bottomLeft","bottomCenter"],["centerRight","topRight"],["center","topLeft"]);
+      rank = this.addRank(icon,[["bottomLeft","bottomCenter"],["centerRight","topRight"],["center","topLeft"]]);
     }
     return rank;
   }
@@ -188,4 +188,5 @@ class GameModel{
           return [60,61,62,69,70,71,78,79,80];
       }
     }
+
 }

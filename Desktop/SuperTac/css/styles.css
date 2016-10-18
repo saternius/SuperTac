@@ -14,7 +14,7 @@ body{
   margin-left: 5%;
   margin-top: 5%;
   position: relative;
-  left:calc(50% - 350px);
+  left:calc(35% - 350px);
 }
 
 
@@ -37,4 +37,46 @@ body{
   left: calc(50% - 10px);
   font-family: 'Patrick Hand SC', cursive;
   font-size: 2.5rem;
+}
+
+.board-status{
+  position: absolute;
+  width: 40%;
+  height: 97%;
+  left: 101%;
+  top: 3px;
+  border-radius: 5px;
+  background: linear-gradient(#212020,#272626);
+  color: white;
+  font-family: 'Patrick Hand SC', cursive;
+  font-size: 25px;
+  padding: 5px 25px;
+}
+
+.status-text{
+  margin-left: 10px;
+}
+
+.cover-up{
+  position: absolute;
+  z-index: 99;
+  width:100%;
+  height:100%;
+  pointer-events: none;
+}
+
+.cover-square{
+  width: 33.33%;
+  height: 33.33%;
+  display: inline-block;
+  pointer-events: none;
+
+}
+
+.cover-text{
+    pointer-events: none;
+    font-family: 'Patrick Hand SC', cursive;
+    font-size: 15rem;
+    text-align: center;
+    margin-top: -90px;
 }
