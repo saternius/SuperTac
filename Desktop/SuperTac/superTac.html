@@ -17,6 +17,7 @@
   </body>
 
   <script src="js/GameModel.js"></script>
+  <script src="js/Ai.js"></script>
   <script type="text/babel">
 
       class Grid extends React.Component{
@@ -149,20 +150,25 @@
         constructor(props){
           super(props);
           this.state = {
-            model: new GameModel()
+            model: curGame
           }
+          setSimBoard(this);
         }
 
         render() {
           var model = this.state.model;
           var i = -1;
+
           var comps = model.grid.map((sq)=>{
             i++;
             var n = "block_"+i;
             var leg = model.legals.indexOf(i)>-1;
             return <Grid id={n} key={n} pos={i} icon={sq.icon} legal={leg} onclick={
               ((i)=>{
-                    return ()=>{model.gotClicked(i, this)}
+                    return ()=>{
+                      model.makeMove(i);
+                      this.setState({model:model});
+                    }
                   })(i)
             }/>;
           });
