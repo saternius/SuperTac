@@ -1,27 +1,33 @@
 class SearchTree{
-  constructor(legals, depth){
-    this.legals = legals;
+  constructor(gameModel,depth){
+    this.game = gameModel;
+    this.legals = gameModel.legals;
     this.depth = depth;
     this.sight = {};
-    for(var i=0; i<legals.length; i++){
-      this.sight[legals[i]] = null;
+    for(var i=0; i<this.legals.length; i++){
+      this.sight[this.legals[i]] = null;
     }
+    this.leaf = false;
+    this.winner = "none";
+    this.winFeel = gameModel.getWinFeel();
   }
 
-  traverse(turn,depth){
+  traverse(){
+    var game = this.game;
     var node = this.getNextNullNode();
-    curGame.makeMove(parseInt(node));
-    boardGraphic.setState({model:curGame})
-    // console.log("traversing..");
-    // console.log(this.sight);
-    // console.log(node);
-    this.sight[node] = new SearchTree(curGame.legals,depth);
-
-    if(turn === "x"){
-      oSearch = this.sight[node];
-    }else{
-      xSearch = this.sight[node];
+    game.makeMove(parseInt(node));
+    boardGraphic.setState({model:game})
+    if(game.gameOver){
+      this.leaf = true;
+      this.winner = game.winner;
+      return;
     }
+    var reldepth = this.depth+1;
+    this.sight[node] = new SearchTree(game,reldepth);
+
+    setTimeout(()=>{
+      this.sight[node].traverse();
+    },delay);
   }
 
   getNextNullNode(){
@@ -33,38 +39,15 @@ class SearchTree{
   }
 }
 
-
 var curGame = new GameModel();
-var xSearch;
-var oSearch;
+var search;
 var depth = 0;
 var delay = 100;
 function simulateGame(){
-// while(!curGame.gameOver){
-    setTimeout(()=>{
-        nextMove(curGame.turn);
-    },500)
-
-// }
-}
-
-function nextMove(turn){
-  console.log("depth: "+depth)
-  if(depth == 0){
-    xSearch = new SearchTree(curGame.legals);
-  }else if(depth == 1){
-    oSearch = new SearchTree(curGame.legals);
-  }
-
-  var searchTree = turn==="x"?xSearch:oSearch;
-  searchTree.traverse(turn,depth);
-  depth++;
-
-  if(depth<44){//!curGame.gameOver){
-    setTimeout(()=>{
-        nextMove(curGame.turn);
-    },delay)
-  }
+  search = new SearchTree(curGame,0);
+  setTimeout(()=>{
+      search.traverse();
+  },500)
 }
 
 var boardGraphic;
