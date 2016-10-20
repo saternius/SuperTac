@@ -1,0 +1,32 @@
+{
+  "name": "qgmed",
+  "version": "1.0.0",
+  "description": "the qgmed webserver",
+  "main": "simple.js",
+  "dependencies": {
+    "body-parser": "^1.15.1",
+    "ejs": "^2.4.2",
+    "exec": "^0.2.1",
+    "express": "^4.13.4",
+    "express-fileupload": "^0.0.5",
+    "fileupload": "^1.0.0",
+    "fs": "^0.0.2",
+    "socket.io": "^1.4.6",
+    "stringy": "^0.1.0",
+    "wkhtmltopdf": "^0.3.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saternius/QGWebServer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/saternius/QGWebServer/issues"
+  },
+  "homepage": "https://github.com/saternius/QGWebServer#readme"
+}
