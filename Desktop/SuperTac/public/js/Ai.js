@@ -1,60 +1,53 @@
 importScripts('Positions.js');
 importScripts('GameModel.js');
 class SearchTree{
-  constructor(gameModel,playerMove,depth){
+  constructor(gameModel,playerMove){
     this.game = new GameModel(gameModel);
     this.game.makeMove(parseInt(playerMove));
     this.legals = this.game.legals;
-    this.depth = depth;
     this.winFeel = this.game.getWinFeel();
+    this.move = playerMove;
   }
 
-  traverse(){
-    if(!think || game.gameOver){
-      return this.winFeel;
-    }
-
+  traverse(maxDepth, min){
     var game = this.game;
+    if(maxDepth==0 || game.gameOver){
+      return {feel: this.winFeel, move: this.move, searchTree:this.game};
+    }
     var legals = this.legals;
-    var depth = this.depth+1;
-    var queue = [];
-
-    var bestFeel = -99999;
+    var bestFeel = min?99999:-99999;
     var bestMove = -1;
+    var searchTree = {};
     for(var i=0; i<legals.length;i++){
-      var subTree = new SearchTree(game,legals[i],depth)
-      queue.push(subTree);
-      if(subTree.winFeel>bestFeel){
-        bestFeel = subTree.winFeel;
-        bestMove = legals[i];
+      var bestSub = new SearchTree(game,legals[i]).traverse(maxDepth-1,!min);
+      searchTree[legals[i]] = bestSub.searchTree;
+      if(min){
+        if(bestSub.feel<bestFeel){
+          bestFeel = bestSub.feel;
+          bestMove = legals[i];
+        }
+      }else{
+        if(bestSub.feel>bestFeel){
+          bestFeel = bestSub.feel;
+          bestMove = legals[i];
+        }
       }
     }
-    return bestMove;
+    var dir = min?"min":"max";
+    return {feel:bestFeel, move:bestMove, searchTree:{dir:dir, pick:bestFeel, move:bestMove, tree:searchTree}};
   }
 }
 
-var search;
-var depth = 0;
-var delay = 5;
-function simulateGame(){
-  search = new SearchTree(curGame,0);
-  setTimeout(()=>{
-      search.traverse();
-  },500)
-}
 
 var thinkTime = 2000;
 var think = false;
+var maxDepth = 5;
 onmessage = function(msg){
   var game = msg.data.game;
   var playerMove = msg.data.move;
-  var think = true;
+  think = true;
   var search = new SearchTree(game,playerMove,0);
-  setTimeout(()=>{
-    think = false;
-  },thinkTime);
-  var bestMove = search.traverse();
-  postMessage(bestMove);
+  var bestMove = search.traverse(maxDepth,true);
+  console.log(bestMove);
+  postMessage(bestMove.move);
 }
-//  postMessage("Well hello there");
-//simulateGame();

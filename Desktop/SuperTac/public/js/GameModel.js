@@ -14,9 +14,9 @@ class Square{
 }
 
 class SubBoard{
-  constructor(grid,pos){
-    if(grid.bestRank !== undefined){
-      this.copyConstructor(grid);
+  constructor(grid,pos,obj){
+    if(obj !== undefined){
+      this.copyConstructor(grid,pos,obj);
       return;
     }
 
@@ -25,12 +25,25 @@ class SubBoard{
       this.subGrid = grid;
       return;
     }
+    this.initGrid(grid,pos);
+  }
+
+  initGrid(grid,pos){
     var squares = Positions.getSubBoardCords(pos);
     this.subGrid = {topLeft:grid[squares[0]],topCenter:grid[squares[1]],topRight:grid[squares[2]],centerLeft:grid[squares[3]],center:grid[squares[4]],centerRight:grid[squares[5]],bottomLeft:grid[squares[6]],bottomCenter:grid[squares[7]],bottomRight:grid[squares[8]]};
   }
 
-  copyConstructor(obj){
-    this.subGrid = obj.subGrid;
+  copyConstructor(grid,pos,obj){
+    this.subGrid = {};
+    if(pos === null){
+      for(var key in obj.subGrid){
+        //console.log(key);
+        this.subGrid[key] = {icon:obj.subGrid[key].icon};
+      }
+    }else{
+      this.initGrid(grid,pos);
+    }
+
     this.winner = obj.winner;
     this.winning = obj.winning;
     this.bestRank = obj.bestRank;
@@ -155,17 +168,19 @@ class GameModel{
         this.grid.push(new Square(obj.grid[i]));
       }
       this.subBoards = {
-        topLeft:new SubBoard(obj.subBoards["topLeft"]),
-        topCenter:new SubBoard(obj.subBoards["topCenter"]),
-        topRight:new SubBoard(obj.subBoards["topRight"]),
-        centerLeft:new SubBoard(obj.subBoards["centerLeft"]),
-        center:new SubBoard(obj.subBoards["center"]),
-        centerRight:new SubBoard(obj.subBoards["centerRight"]),
-        bottomLeft:new SubBoard(obj.subBoards["bottomLeft"]),
-        bottomCenter:new SubBoard(obj.subBoards["bottomCenter"]),
-        bottomRight:new SubBoard(obj.subBoards["bottomRight"])
+        topLeft:new SubBoard(this.grid, "topLeft", obj.subBoards["topLeft"]),
+        topCenter:new SubBoard(this.grid, "topCenter", obj.subBoards["topCenter"]),
+        topRight:new SubBoard(this.grid, "topRight", obj.subBoards["topRight"]),
+        centerLeft:new SubBoard(this.grid, "centerLeft", obj.subBoards["centerLeft"]),
+        center:new SubBoard(this.grid, "center", obj.subBoards["center"]),
+        centerRight:new SubBoard(this.grid, "centerRight", obj.subBoards["centerRight"]),
+        bottomLeft:new SubBoard(this.grid, "bottomLeft", obj.subBoards["bottomLeft"]),
+        bottomCenter:new SubBoard(this.grid, "bottomCenter", obj.subBoards["bottomCenter"]),
+        bottomRight:new SubBoard(this.grid, "bottomRight", obj.subBoards["bottomRight"])
        };
-       this.macroBoard = new SubBoard(obj.macroBoard);
+      // console.log(obj);
+       this.macroBoard = new SubBoard(null,null,obj.macroBoard);
+       //console.log(this.macroBoard);
        this.turn = obj.turn;
        this.legals = obj.legals;
        this.gameOver = obj.gameOver;
@@ -180,6 +195,8 @@ class GameModel{
       grid.icon = this.turn;
       var winner = this.subBoards[lastPointer].addGrid(grid.pointer,this.turn);
       if(winner !=="none"){
+        //console.log(this.macroBoard.subGrid);
+        //console.log(lastPointer);
         this.macroBoard.subGrid[lastPointer].icon = winner;
         var won = this.macroBoard.addGrid(lastPointer,winner);
         if(won !== "none"){
@@ -231,22 +248,22 @@ class GameModel{
      if(winner==="none"){
        var winning = subBoard.winning;
        if(winning === "x"){
-         return mag*(Math.pow(2,subBoard.bestRank));
+         return mag*(Math.pow(3,subBoard.bestRank));
        }else if(winning ==="o"){
-         return -mag*(Math.pow(2,subBoard.bestRank));
+         return -mag*(Math.pow(3,subBoard.bestRank));
        }
        return 0;
      }else{
        if(winner ==="x"){
-         return mag*10;
+         return mag*12;
        }else{
-         return mag*-10;
+         return mag*-12;
        }
      }
    }
     getWinFeel(){
       var feel = 0;
-      feel+= this.getFeelBonus(this.macroBoard,18);
+      feel+= this.getFeelBonus(this.macroBoard,25);
       for(var key in this.subBoards){
         feel+=this.getFeelBonus(this.subBoards[key],1);
       }

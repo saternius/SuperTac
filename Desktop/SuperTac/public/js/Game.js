@@ -6,13 +6,14 @@ function setSimBoard(board){
   boardGraphic = board;
 }
 
-
 ai.onmessage = function (oEvent) {
-  console.log("Worker said : " + oEvent.data);
+  var aiMove = parseInt(oEvent.data);
+  curGame.makeMove(aiMove);
+  boardGraphic.setState({model:curGame});
 };
 
 function startThinking(i){
   console.log("thinking..");
-  ai.postMessage({game:curGame,move:i});
+  ai.postMessage({game:Object.assign({"ai":true}, curGame) ,move:i});
 }
 // ai.postMessage(curGame);
